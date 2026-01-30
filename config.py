@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Optional, List, Any, Dict
+from typing import Optional, List, Any, Dict, Tuple
 
 
 @dataclass
@@ -54,6 +54,6 @@ class Qwen3Config:
 @dataclass
 class CausalLMOutput:
     logits: "torch.Tensor"
-    past_key_values: Optional[tuple] = None
+    past_key_values: Optional[List[Tuple["torch.Tensor", "torch.Tensor"]]] = None
     hidden_states: Optional[tuple] = None
     attentions: Optional[tuple] = None
