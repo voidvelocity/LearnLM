@@ -91,9 +91,8 @@ class Qwen3Attention(nn.Module):
         k = apply_rotary(k, cos, sin)
 
         # --- GQA: map 2H Q heads -> H KV heads
-        # q = q.view(B, H, 2, T, D).reshape(B, H, 2 * T, D)  # [B, 2H, T, D] -> [B, H, 2, T, D]
-
         # q: [B, 2H, T, D]
+        # The repeat_interleave is optinal, tensor will broadcast `H` to `2H` at dim 1.
         k = k.repeat_interleave(2, dim=1)  # [B, 2H, T, D]
         v = v.repeat_interleave(2, dim=1)  # [B, 2H, T, D]
 
@@ -128,7 +127,7 @@ class Qwen3Attention(nn.Module):
         """
 
         # attention output
-        # [B, 2H, T, T] @ [B, H, T, D] -> [B, 2H, T, D]
+        # [B, 2H, T, T] @ [B, 2H, T, D] -> [B, 2H, T, D]
         out = torch.matmul(attn, v)
 
         # fold heads back
